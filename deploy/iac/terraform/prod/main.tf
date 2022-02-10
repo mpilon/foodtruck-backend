@@ -28,7 +28,7 @@ module "prod-ftfp-task" {
   source              = "cn-terraform/ecs-fargate/aws"
   name_prefix         = "${var.env}-root-ftfp"
   vpc_id              = module.prod-base-network.vpc_id
-  container_image     = "rootprods/reliability-interview-container:201805"
+  container_image     = var.ecr_image
   container_name      = "prod-ftfp-reliability-interview-container"
   port_mappings       = [{
                           containerPort  = 5000
