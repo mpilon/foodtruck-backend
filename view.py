@@ -1,10 +1,17 @@
 import flask
 from flask import request, jsonify
-from flask_cors import CORS
 import json
 
+## REMOVE FOR PROD
+## from flask_cors import CORS
+
+
+
 app = flask.Flask(__name__)
-CORS(app) ## REMOVE FOR PROD
+
+## REMOVE FOR PROD
+## CORS(app)
+
 app.config["DEBUG"] = True
 
 # Create some test data for our catalog in the form of a list of dictionaries.
