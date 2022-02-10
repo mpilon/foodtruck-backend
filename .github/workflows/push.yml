@@ -44,10 +44,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v2
     - name: Verify Terraform version
       run: terraform --version
       working-directory: deploy/iac/terraform/prod
-      uses: actions/checkout@v2
+      
 
     - name: Terraform init
       env:
@@ -55,12 +56,10 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: terraform init -input=false
       working-directory: deploy/iac/terraform/prod
-      uses: actions/checkout@v2
 
     - name: Terraform validation
       run: terraform validate
       working-directory: deploy/iac/terraform/prod
-      uses: actions/checkout@v2
 
     - name: Terraform apply
       env:
@@ -68,4 +67,3 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: terraform apply -auto-approve -input=false
       working-directory: deploy/iac/terraform/prod
-      uses: actions/checkout@v2
