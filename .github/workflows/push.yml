@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [ main ]
 
-name: `Food Truck Flight Plan` CI on ECR
+name: Food Truck Flight Plan CI on ECR
 
 jobs:
   deploy:
