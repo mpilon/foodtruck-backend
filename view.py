@@ -2,13 +2,13 @@ import flask
 from flask import request, jsonify
 import json
 
-## REMOVE FOR PROD
-## from flask_cors import CORS
+## TODO: REMOVE FOR PROD
+from flask_cors import CORS
 
 app = flask.Flask(__name__)
 
-## REMOVE FOR PROD
-## CORS(app)
+## TODO: REMOVE FOR PROD
+CORS(app)
 
 app.config["DEBUG"] = True
 
