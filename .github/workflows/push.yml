@@ -44,6 +44,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Test
+      run: pwd
+    - name: Test 2
+      run: ls -al
     - name: Verify Terraform version
       run: terraform --version
       working-directory: ./deploy/iac/terraform/prod
