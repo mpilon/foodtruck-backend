@@ -7,8 +7,8 @@ on:
 name: Food Truck Flight Plan CI on ECR
 
 jobs:
-  deploy:
-    name: Deploy
+  push_ecr:
+    name: Push To ECR
     runs-on: ubuntu-latest
 
     steps:
@@ -38,3 +38,26 @@ jobs:
         echo "Pushing image to ECR..."
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+  terraform_apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Verify Terraform version
+      run: cd deploy/iac/terraform/prod && terraform --version
+
+    - name: Terraform init
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: cd deploy/iac/terraform/prod && terraform init -input=false
+
+    - name: Terraform validation
+      run: terraform validate
+
+    - name: Terraform apply
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: cd deploy/iac/terraform/prod && terraform apply -auto-approve -input=false

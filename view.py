@@ -5,8 +5,6 @@ import json
 ## REMOVE FOR PROD
 ## from flask_cors import CORS
 
-
-
 app = flask.Flask(__name__)
 
 ## REMOVE FOR PROD
