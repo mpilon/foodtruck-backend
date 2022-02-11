@@ -29,7 +29,7 @@ module "prod-ftfp-task" {
   name_prefix         = "${var.env}-ftfp"
   vpc_id              = module.prod-base-network.vpc_id
   container_image     = var.ecr_image
-  container_name      = "${var.env}-ftfp-api-container"s
+  container_name      = "${var.env}-ftfp-api-container"
   log_configuration   = {
     logDriver = "awslogs"
     options = {
