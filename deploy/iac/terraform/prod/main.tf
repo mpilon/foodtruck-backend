@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">=0.12.13"
+  required_version = ">=1.1.5"
   backend "s3" {
     bucket         = "ftfp-tf-state"
     key            = "prod/terraform.tfstate"
@@ -8,9 +8,18 @@ terraform {
     encrypt        = true
   }
 }
+#  required_providers {
+#    aws = {
+#      source  = "hashicorp/aws"
+#      version = "~> 3.0"
+#      region = var.aws_region
+#    }
+#  }
+
 
 provider "aws" {
-  region = var.aws_region
+  version = "~> 3.0"
+  region = var.aws_region  
 }
 
 
@@ -26,6 +35,7 @@ module "prod-base-network" {
 
 module "prod-ftfp-task" {
   source              = "cn-terraform/ecs-fargate/aws"
+  version             = "2.0.28"
   name_prefix         = "${var.env}-ftfp"
   vpc_id              = module.prod-base-network.vpc_id
   container_image     = var.ecr_image
@@ -53,4 +63,24 @@ module "prod-ftfp-task" {
   lb_https_ports      = {}
   public_subnets_ids  = module.prod-base-network.public_subnets_ids
   private_subnets_ids = module.prod-base-network.private_subnets_ids
+}
+
+
+resource "aws_eip" "prod-ftfp-eip-1" {
+  vpc      = true
+}
+
+resource "aws_eip" "prod-ftfp-eip-2" {
+  vpc      = true
+}
+
+resource "aws_nat_gateway" "prod-ftfp-nat-1" {
+  connectivity_type = "public"
+  subnet_id         = module.prod-base-network.private_subnets_ids[0]
+  allocation_id     = aws_eip.prod-ftfp-eip-1.id
+}
+resource "aws_nat_gateway" "prod-ftfp-nat-2" {
+  connectivity_type = "public"
+  subnet_id         = module.prod-base-network.private_subnets_ids[1]
+  allocation_id     = aws_eip.prod-ftfp-eip-2.id
 }
