@@ -25,9 +25,15 @@ module "dev-ftfp-task" {
   name_prefix         = "${var.env}-ftfp"
   vpc_id              = module.dev-base-network.vpc_id
   container_image     = var.ecr_image
-  container_name      = "dev-ftfp-reliability-interview-container"
+  container_name      = "dev-ftfp-api-container"
   log_configuration   = {
     logDriver = "awslogs"
+    options = {
+      awslogs-group =  "foodtruck-api" ## parameterize app name
+      awslogs-region = "us-east-1"
+      awslogs-create-group = "true"
+      awslogs-stream-prefix = "${var.env}-ftfp"
+    }
   }
   port_mappings       = [{
                           containerPort  = 5000
