@@ -69,8 +69,13 @@ module "prod-ftfp-task" {
 resource "aws_eip" "prod-ftfp-eip-1" {
   vpc      = true
 }
-
 resource "aws_eip" "prod-ftfp-eip-2" {
+  vpc      = true
+}
+resource "aws_eip" "prod-ftfp-eip-3" {
+  vpc      = true
+}
+resource "aws_eip" "prod-ftfp-eip-4" {
   vpc      = true
 }
 
@@ -83,4 +88,14 @@ resource "aws_nat_gateway" "prod-ftfp-nat-2" {
   connectivity_type = "public"
   subnet_id         = module.prod-base-network.private_subnets_ids[1]
   allocation_id     = aws_eip.prod-ftfp-eip-2.id
+}
+resource "aws_nat_gateway" "prod-ftfp-nat-3" {
+  connectivity_type = "public"
+  subnet_id         = module.prod-base-network.private_subnets_ids[2]
+  allocation_id     = aws_eip.prod-ftfp-eip-3.id
+}
+resource "aws_nat_gateway" "prod-ftfp-nat-4" {
+  connectivity_type = "public"
+  subnet_id         = module.prod-base-network.private_subnets_ids[3]
+  allocation_id     = aws_eip.prod-ftfp-eip-4.id
 }
