@@ -22,10 +22,13 @@ module "dev-base-network" {
 
 module "dev-ftfp-task" {
   source              = "cn-terraform/ecs-fargate/aws"
-  name_prefix         = "${var.env}-root-ftfp"
+  name_prefix         = "${var.env}-ftfp"
   vpc_id              = module.dev-base-network.vpc_id
   container_image     = var.ecr_image
   container_name      = "dev-ftfp-reliability-interview-container"
+  log_configuration   = {
+    logDriver = "awslogs"
+  }
   port_mappings       = [{
                           containerPort  = 5000
                           hostPort       = 5000

@@ -26,7 +26,7 @@ module "prod-base-network" {
 
 module "prod-ftfp-task" {
   source              = "cn-terraform/ecs-fargate/aws"
-  name_prefix         = "${var.env}-root-ftfp"
+  name_prefix         = "${var.env}-ftfp"
   vpc_id              = module.prod-base-network.vpc_id
   container_image     = var.ecr_image
   container_name      = "prod-ftfp-reliability-interview-container"
