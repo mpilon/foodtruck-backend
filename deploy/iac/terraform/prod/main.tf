@@ -26,6 +26,16 @@ module "prod-base-network" {
   private_subnets_cidrs_per_availability_zone = ["192.168.128.0/19", "192.168.160.0/19", "192.168.192.0/19", "192.168.224.0/19"]
 }
 
+resource "aws_elasticache_cluster" "ftfp-redis" {
+  cluster_id           = "ftfp-redis"
+  engine               = "redis"
+  node_type            = "cache.t2.micro"
+  num_cache_nodes      = 1
+  parameter_group_name = "default.redis3.2"
+  engine_version       = "3.2.10"
+  port                 = 6379
+}
+
 resource "aws_cloudwatch_log_group" "prod-ftfp-api-logs" {
   name = "${var.env}-foodtruck-api"
 }
@@ -55,6 +65,9 @@ module "prod-ftfp-task" {
       }
     )
   ]
+  environment = {
+    "ELASTICACHE_REDIS_REPLICATION_GID" = aws_elasticache_cluster.ftfp-redis.replication_group_id
+  }
   log_configuration   = {
     logDriver = "awslogs"
     options = {
