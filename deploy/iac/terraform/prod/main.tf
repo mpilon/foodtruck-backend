@@ -66,7 +66,10 @@ module "prod-ftfp-task" {
     )
   ]
   environment = [
-    { "ELASTICACHE_REDIS_REPLICATION_GID" = aws_elasticache_cluster.ftfp-redis.replication_group_id },
+    { 
+      name = "ELASTICACHE_REDIS_REPLICATION_GID",
+      value = aws_elasticache_cluster.ftfp-redis.replication_group_id 
+    },
   ]
   log_configuration   = {
     logDriver = "awslogs"
