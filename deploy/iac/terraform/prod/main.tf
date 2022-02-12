@@ -26,6 +26,10 @@ module "prod-base-network" {
   private_subnets_cidrs_per_availability_zone = ["192.168.128.0/19", "192.168.160.0/19", "192.168.192.0/19", "192.168.224.0/19"]
 }
 
+resource "aws_elasticache_subnet_group" "ftfp-redis" {
+  name       = "ftfp-redis"
+  subnet_ids = module.prod-base-network.private_subnets_ids
+}
 resource "aws_elasticache_cluster" "ftfp-redis" {
   cluster_id           = "ftfp-redis"
   engine               = "redis"
@@ -34,7 +38,7 @@ resource "aws_elasticache_cluster" "ftfp-redis" {
   parameter_group_name = "default.redis3.2"
   engine_version       = "3.2.10"
   port                 = 6379
-  availability_zone    = "us-east-1a"
+  subnet_group_name    = aws_elasticache_subnet_group.ftfp-redis
 }
 
 resource "aws_cloudwatch_log_group" "prod-ftfp-api-logs" {
