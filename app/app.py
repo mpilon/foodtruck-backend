@@ -31,4 +31,3 @@ def api_all():
 
     return {"trucks": lat_lon.fillna('').to_dict(orient='records')}
 
-app.run()
