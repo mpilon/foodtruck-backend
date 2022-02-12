@@ -8,13 +8,6 @@ terraform {
     encrypt        = true
   }
 }
-#  required_providers {
-#    aws = {
-#      source  = "hashicorp/aws"
-#      version = "~> 3.0"
-#      region = var.aws_region
-#    }
-#  }
 
 
 provider "aws" {
@@ -33,6 +26,10 @@ module "prod-base-network" {
   private_subnets_cidrs_per_availability_zone = ["192.168.128.0/19", "192.168.160.0/19", "192.168.192.0/19", "192.168.224.0/19"]
 }
 
+resource "aws_cloudwatch_log_group" "prod-ftfp-api-logs" {
+  name = "${var.env}-foodtruck-api"
+}
+
 module "prod-ftfp-task" {
   source              = "cn-terraform/ecs-fargate/aws"
   version             = "2.0.28"
@@ -40,10 +37,28 @@ module "prod-ftfp-task" {
   vpc_id              = module.prod-base-network.vpc_id
   container_image     = var.ecr_image
   container_name      = "${var.env}-ftfp-api-container"
+  ecs_task_execution_role_custom_policies = [
+    jsonencode(
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": [
+                    "logs:*"
+                ],
+                "Resource": [
+                    aws_cloudwatch_log_group.prod-ftfp-api-logs.arn
+                ]
+            }
+        ]
+      }
+    )
+  ]
   log_configuration   = {
     logDriver = "awslogs"
     options = {
-      awslogs-group =  "foodtruck-api" ## parameterize app name
+      awslogs-group =  "${var.env}-foodtruck-api" ## parameterize app name
       awslogs-region = "us-east-1"
       awslogs-create-group = "true"
       awslogs-stream-prefix = "${var.env}-ftfp"
