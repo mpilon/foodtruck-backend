@@ -26,19 +26,19 @@ module "prod-base-network" {
   private_subnets_cidrs_per_availability_zone = ["192.168.128.0/19", "192.168.160.0/19", "192.168.192.0/19", "192.168.224.0/19"]
 }
 
-resource "aws_elasticache_subnet_group" "ftfp-redis" {
-  name       = "ftfp-redis"
+resource "aws_elasticache_subnet_group" "prod-ftfp-redis" {
+  name       = "prod-ftfp-redis"
   subnet_ids = module.prod-base-network.private_subnets_ids
 }
-resource "aws_elasticache_cluster" "ftfp-redis" {
-  cluster_id           = "ftfp-redis"
+resource "aws_elasticache_cluster" "prod-ftfp-redis" {
+  cluster_id           = "prod-ftfp-redis"
   engine               = "redis"
   node_type            = "cache.t2.micro"
   num_cache_nodes      = 1
   parameter_group_name = "default.redis3.2"
   engine_version       = "3.2.10"
   port                 = 6379
-  subnet_group_name    = aws_elasticache_subnet_group.ftfp-redis
+  subnet_group_name    = aws_elasticache_subnet_group.prod-ftfp-redis.name
 }
 
 resource "aws_cloudwatch_log_group" "prod-ftfp-api-logs" {
@@ -72,8 +72,8 @@ module "prod-ftfp-task" {
   ]
   environment = [
     { 
-      name = "ELASTICACHE_REDIS_REPLICATION_GID",
-      value = aws_elasticache_cluster.ftfp-redis.replication_group_id 
+      name = "ELASTICACHE_REDIS_ADDRESS",
+      value = aws_elasticache_cluster.prod-ftfp-redis.cache_nodes[0].address
     },
   ]
   log_configuration   = {

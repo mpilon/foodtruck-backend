@@ -1,54 +1,31 @@
 import flask
 from flask import request, jsonify
 import json
-
-
-## TODO: REMOVE FOR PROD
+import os
+import logging
+from redis import Redis
 from flask_cors import CORS
 
+## TODO: GET FROM ENV
+env="prod"
+
+## Set up App
 app = flask.Flask(__name__)
+app.config["DEBUG"] = True
 
 ## TODO: REMOVE FOR PROD
 CORS(app)
 
-app.config["DEBUG"] = True
+# Set up Redis
+redis = Redis(host=os.environ.get('ELASTICACHE_REDIS_ADDRESS'), port=6379)
+#redis = Redis(host='prod-ftfp-redis.srpgwa.0001.use1.cache.amazonaws.com, port=6379, decode_responses=True, ssl=True, username='myuser', password='MyPassword0123456789')
 
-# Create some test data for our catalog in the form of a list of dictionaries.
+if redis.ping():
+    logging.info("Connected to Redis")
 
 @app.route('/', methods=['GET'])
 def home():
-    return '''<h1>Foodtruck Backend</h1>
-<p>Endpoints for FoodTruck Assistant</p>'''
-
-@app.route('/redis-test', methods=['GET'])
-def redis_test():
-    import boto3
-    import botocore
-    import os
-    import sys
-
-    client = boto3.client('elasticache')
-
-    #response = client.describe_replication_groups(
-    #    ReplicationGroupId=os.environ.get('ELASTICACHE_REDIS_REPLICATION_GID')
-    #)
-
-    try:
-        response = client.describe_replication_groups(
-            ReplicationGroupId=os.environ.get('ELASTICACHE_REDIS_REPLICATION_GID')
-        )
-    except botocore.exceptions.ClientError as error:
-        print(error)
-        # Put your error handling logic here
-        
-        ##template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-        ##message = template.format(type(ex).__name__, ex.args)
-        ##print (message)
-        return '''<h1>Client error</h1>'''
-
-    return response
-    ##except:
-    
+    return '''<h1>Foodtruck Backend</h1>'''
 
 # A route to return all of the available entries in our catalog.
 @app.route('/api/v1/resources/trucks/all', methods=['GET'])
