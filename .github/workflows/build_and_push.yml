@@ -4,8 +4,7 @@ on:
   pull_request:
     branches: [ main ]
 
-name: Food Truck Flight Plan CI on ECR
-
+name: Build and Push to ECR
 jobs:
   push_ecr:
     name: Push To ECR
@@ -40,31 +39,14 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-  terraform_apply:
-    name: Terraform Apply
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Verify Terraform version
-      run: terraform --version
-      working-directory: deploy/iac/terraform/prod
-      
-
-    - name: Terraform init
+    - name: Emit New Image
+      id: emit-new-image
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      run: terraform init -input=false
-      working-directory: deploy/iac/terraform/prod
-
-    - name: Terraform validation
-      run: terraform validate
-      working-directory: deploy/iac/terraform/prod
-
-    - name: Terraform apply
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      run: terraform apply -auto-approve -input=false
-      working-directory: deploy/iac/terraform/prod
+        ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
+        IMAGE_TAG: ${{ steps.login-ecr.outputs.image }}
+      run: |
+        curl -X POST \
+        -H "Accept: application/vnd.github.v3+json" \
+        -H "Authorization: token $ACTIONS_PAT" \
+        --data '{"event_type": "new_image", "client_payload": { "new_image": "${IMAGE_TAG}"}}' \
+        https://api.github.com/repos/mpilon/foodtruck-backend/dispatches   
