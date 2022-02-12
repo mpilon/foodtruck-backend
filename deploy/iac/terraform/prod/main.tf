@@ -34,6 +34,7 @@ resource "aws_elasticache_cluster" "ftfp-redis" {
   parameter_group_name = "default.redis3.2"
   engine_version       = "3.2.10"
   port                 = 6379
+  availability_zone    = "us-east-1a"
 }
 
 resource "aws_cloudwatch_log_group" "prod-ftfp-api-logs" {
