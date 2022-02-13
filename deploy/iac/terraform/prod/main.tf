@@ -52,41 +52,41 @@ module "prod-ftfp-task" {
   vpc_id              = module.prod-base-network.vpc_id
   container_image     = var.ecr_image
   container_name      = "${var.env}-ftfp-api-container"
-  ecs_task_execution_role_custom_policies = [
-    jsonencode(
-      {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Effect": "Allow",
-                "Action": [
-                    "logs:*"
-                ],
-                "Resource": [
-                    aws_cloudwatch_log_group.prod-ftfp-api-logs.arn
-                ]
-            }
-        ]
-      }
-    ),
-    jsonencode(
-      {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Effect": "Allow",
-                "Action": [
-                    "ssmmessages:CreateControlChannel",
-                    "ssmmessages:CreateDataChannel",
-                    "ssmmessages:OpenControlChannel",
-                    "ssmmessages:OpenDataChannel"
-                ],
-                "Resource": "*"
-            }
-        ]
-      }
-    )
-  ]
+  ##ecs_task_execution_role_custom_policies = [
+  ##  jsonencode(
+  ##    {
+  ##      "Version": "2012-10-17",
+  ##      "Statement": [
+  ##          {
+  ##              "Effect": "Allow",
+  ##              "Action": [
+  ##                  "logs:*"
+  ##              ],
+  ##              "Resource": [
+  ##                  aws_cloudwatch_log_group.prod-ftfp-api-logs.arn
+  ##              ]
+  ##          }
+  ##      ]
+  ##    }
+  ##  ),
+  ##  jsonencode(
+  ##    {
+  ##      "Version": "2012-10-17",
+  ##      "Statement": [
+  ##          {
+  ##              "Effect": "Allow",
+  ##              "Action": [
+  ##                  "ssmmessages:CreateControlChannel",
+  ##                  "ssmmessages:CreateDataChannel",
+  ##                  "ssmmessages:OpenControlChannel",
+  ##                  "ssmmessages:OpenDataChannel"
+  ##              ],
+  ##              "Resource": "*"
+  ##          }
+  ##      ]
+  ##    }
+  ##  )
+  ##]
   environment = [
     { 
       name = "ELASTICACHE_REDIS_ADDRESS",
