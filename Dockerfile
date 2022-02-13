@@ -1,9 +1,11 @@
 # start by pulling the python image
 FROM python:3.8
 
-#RUN echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
-#RUN apk add --update --no-cache py3-numpy py3-pandas@testing
-#ENV PYTHONPATH=/usr/lib/python3.8/site-packages
+RUN mkdir /tmp/ssm \
+	cd /tmp/ssm \
+	wget https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/debian_amd64/amazon-ssm-agent.deb \
+	sudo dpkg -i amazon-ssm-agent.deb \
+	sudo systemctl enable amazon-ssm-agent
 
 # copy every content from the local file to the image
 COPY app /app
