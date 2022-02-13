@@ -17,11 +17,11 @@ app.config["DEBUG"] = True
 CORS(app)
 
 # Set up Redis
-redis = Redis(host=os.environ.get('ELASTICACHE_REDIS_ADDRESS'), port=6379)
+#redis = Redis(host=os.environ.get('ELASTICACHE_REDIS_ADDRESS'), port=6379)
 #redis = Redis(host='prod-ftfp-redis.srpgwa.0001.use1.cache.amazonaws.com, port=6379, decode_responses=True, ssl=True, username='myuser', password='MyPassword0123456789')
 
-if redis.ping():
-    logging.info("Connected to Redis")
+#if redis.ping():
+#    logging.info("Connected to Redis")
 
 @app.route('/', methods=['GET'])
 def home():
