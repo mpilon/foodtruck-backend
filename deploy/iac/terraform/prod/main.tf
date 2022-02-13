@@ -66,7 +66,7 @@ module "prod-ftfp-task" {
                     aws_cloudwatch_log_group.prod-ftfp-api-logs.arn
                 ]
             },
-            {        {
+            {        
                 "Effect": "Allow",
                 "Action": [
                     "ssmmessages:CreateControlChannel",
