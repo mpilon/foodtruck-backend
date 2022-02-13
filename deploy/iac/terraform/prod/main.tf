@@ -65,15 +65,8 @@ module "prod-ftfp-task" {
                 "Resource": [
                     aws_cloudwatch_log_group.prod-ftfp-api-logs.arn
                 ]
-            }
-        ]
-      }
-    ),
-    jsonencode(
-      {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
+            },
+            {        {
                 "Effect": "Allow",
                 "Action": [
                     "ssmmessages:CreateControlChannel",
